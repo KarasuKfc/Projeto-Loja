@@ -1,148 +1,103 @@
 using ProjetoLoja.Models;
+using trabalhoparte1.Repositorios;
+using System;
 
 namespace ProjetoLoja.Services
 {
     public class FornecedorService
     {
-        static Fornecedor[] fornecedores = new Fornecedor[100];
-        static int contador = 0;
+        private FornecedorRepositorio repositorio;
+
+        public FornecedorService(FornecedorRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
 
         public void Menu()
         {
             int opcao;
             do
             {
-                Console.WriteLine("\n--- FORNECEDORES ---");
-                Console.WriteLine("1. Incluir");
-                Console.WriteLine("2. Alterar");
-                Console.WriteLine("3. Excluir");
-                Console.WriteLine("4. Consultar");
-                Console.WriteLine("0. Voltar");
-                Console.Write("Escolha: ");
-                opcao = int.Parse(Console.ReadLine());
+                Console.WriteLine("\n=== Menu Fornecedor ===");
+                Console.WriteLine("1- Adicionar Fornecedor");
+                Console.WriteLine("2- Listar Fornecedores");
+                Console.WriteLine("3- Remover Fornecedor");
+                Console.WriteLine("4- Buscar Fornecedor por CNPJ");
+                Console.WriteLine("0- Sair");
+                Console.WriteLine("Opção: ");
+                int.TryParse(Console.ReadLine(), out opcao);
 
                 switch (opcao)
                 {
-                    case 1: Incluir(); break;
-                    case 2: Alterar(); break;
-                    case 3: Excluir(); break;
-                    case 4: Consultar(); break;
+                    case 1: Adicionar(); break;
+                    case 2: Listar(); break;
+                    case 3: Remover(); break;
+                    case 4: Buscar(); break;
                 }
-
             } while (opcao != 0);
         }
 
-        void Incluir()
+        private void Adicionar()
         {
-            Console.Write("Código do fornecedor: ");
-            int codigo = int.Parse(Console.ReadLine());
-            if (ValidadorCodigo.VerificarCodigoDuplicado(fornecedores, contador, codigo))
-            {
-                Console.WriteLine("Código já cadastrado para outro fornecedor.");
-                return;
-            }
+            Console.Write("CNPJ (somente números): ");
+            int cnpj = int.Parse(Console.ReadLine());
+
             Console.Write("Nome: ");
             string nome = Console.ReadLine();
-            Console.Write("CNPJ: ");
-            string cnpj = Console.ReadLine();
 
-            Console.WriteLine("Informe o endereço:");
-            Endereco endereco = EnderecoService.LerEndereco();
+            Console.Write("Endereço: ");
+            string endereco = Console.ReadLine();
 
-            fornecedores[contador++] = new Fornecedor(codigo, nome, cnpj, endereco);
-            Console.WriteLine("Fornecedor incluído com sucesso.");
+            var f = new Fornecedor(cnpj, nome, endereco);
+            repositorio.Adicionar(f);
+
+            Console.WriteLine("Fornecedor adicionado com sucesso!");
         }
 
-        void Alterar()
+        private void Listar()
         {
-            Console.Write("Código do fornecedor a ser alterado: ");
-            int codigo = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < contador; i++)
+            Console.WriteLine("=== Lista de Fornecedores ===");
+            var lista = repositorio.ListarTodos();
+            if (lista.Count == 0)
             {
-                if (fornecedores[i].Codigo == codigo)
-                {
-                    Console.Write("Novo nome: ");
-                    fornecedores[i].Nome = Console.ReadLine();
-                    Console.Write("Novo CNPJ: ");
-                    fornecedores[i].Cnpj = Console.ReadLine();
-                    Console.WriteLine("Deseja alterar o endereço? (s/n)");
-                    if (Console.ReadLine().Trim().ToLower() == "s")
-                    {
-                        fornecedores[i].Endereco = EnderecoService.LerEndereco();
-                    }
-                    Console.WriteLine("Alterado com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Nenhum fornecedor cadastrado.");
             }
-            Console.WriteLine("Fornecedor não encontrado.");
+            else
+            {
+                lista.ForEach(Console.WriteLine);
+            }
         }
 
-        void Excluir()
+        private void Remover()
         {
-            Console.Write("Código do fornecedor a ser excluído: ");
-            int codigo = int.Parse(Console.ReadLine());
+            Console.WriteLine("Informe o CNPJ do fornecedor a ser removido:");
+            int cnpj = int.Parse(Console.ReadLine());
 
-            for (int i = 0; i < contador; i++)
+            if (repositorio.Remover(cnpj))
             {
-                if (fornecedores[i].Codigo == codigo)
-                {
-                    for (int j = i; j < contador - 1; j++)
-                        fornecedores[j] = fornecedores[j + 1];
-                        fornecedores[contador - 1] = null;
-                        contador--;
-                        Console.WriteLine("Excluído com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Fornecedor removido com sucesso!");
             }
-            Console.WriteLine("Fornecedor não encontrado.");
+            else
+            {
+                Console.WriteLine("Fornecedor não encontrado.");
+            }
         }
 
-        void Consultar()
+        private void Buscar()
         {
-            Console.Write("Código do fornecedor a ser consultado: ");
-            int busca = int.Parse(Console.ReadLine());
+            Console.WriteLine("Informe o CNPJ do fornecedor: ");
+            int cnpj = int.Parse(Console.ReadLine());
 
-            for (int i = 0; i < contador; i++)
+            var fornecedor = repositorio.Buscar(cnpj);
+            if (fornecedor != null)
             {
-                if (fornecedores[i] != null && fornecedores[i].Codigo == busca)
-                {
-                    Console.WriteLine($"Código: {fornecedores[i].Codigo} | Nome: {fornecedores[i].Nome} | CNPJ: {fornecedores[i].Cnpj}");
-                    Endereco e = fornecedores[i].Endereco;
-                    Console.WriteLine($"Endereço: {e.Rua}, {e.Numero}, {e.Complemento}, {e.Bairro}, {e.Cep}, {e.Cidade}, {e.Estado}");
-                    return;
-                }
+                Console.WriteLine(fornecedor);
             }
-            Console.WriteLine("Fornecedor não encontrado.");
-        }
-        public static bool VerificaFornecedorExistente()
-        {
-            return contador > 0;
-        }
-        public static bool VerificaFornecedorExistente(int codigoFornecedor)
-        {
-            if (codigoFornecedor <= 0) return false; 
-            bool encontrado = false;
-            for (int i = 0; i < contador; i++)
+            else
             {
-                if (fornecedores[i].Codigo == codigoFornecedor)
-                {
-                    encontrado = true;
-                }
+                Console.WriteLine("Fornecedor não encontrado.");
             }
-            return encontrado;
-        }
-        public static Fornecedor ObterFornecedorPorCodigo(int codigoFornecedor)
-        {
-            if (codigoFornecedor <= 0) return null; 
-            for (int i = 0; i < contador; i++)
-            {
-                if (fornecedores[i].Codigo == codigoFornecedor)
-                {
-                    return fornecedores[i];
-                }
-            }
-            return null;
         }
     }
 }
+            

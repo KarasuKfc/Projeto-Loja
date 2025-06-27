@@ -82,3 +82,4 @@ C:\Users\kfckl\Desktop\ProjetoLoja24-06\bin\Debug\net8.0\trabalhoparte1.dll
 C:\Users\kfckl\Desktop\ProjetoLoja24-06\bin\Debug\net8.0\trabalhoparte1.pdb
 C:\Users\kfckl\Desktop\ProjetoLoja24-06\obj\Debug\net8.0\trabalhoparte1.genruntimeconfig.cache
 C:\Users\kfckl\Desktop\ProjetoLoja24-06\obj\Debug\net8.0\ref\trabalhoparte1.dll
+C:\Users\kfckl\Desktop\ProjetoLoja24-06\obj\Debug\net8.0\trabalhoparte1.sourcelink.json

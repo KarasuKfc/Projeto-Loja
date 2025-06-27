@@ -2,19 +2,23 @@ using trabalhoparte1.Entidades;
 
 namespace ProjetoLoja.Models
 {
-    public class Fornecedor : IEntidadeComCodigo
+    public class Fornecedor
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Cnpj { get; set; }
-        public Endereco Endereco { get; set; }
+        public int Cnpj { get; set; }
+        public String Nome { get; set; }
+        public String Endereco { get; set; }
 
-        public Fornecedor(int codigo, string nome, string cnpj, Endereco endereco)
+        public Fornecedor(int cnpj, string nome, string endereco)
         {
-            Codigo = codigo;
-            Nome = nome;
             Cnpj = cnpj;
+            Nome = nome;
             Endereco = endereco;
         }
+
+        public override string ToString()
+        {
+            return $"{Cnpj} - Nome: {Nome}, Endereço: {Endereco}";
+        }
     }
+//parei no passo 7 - esse que tem que fazer
 }
