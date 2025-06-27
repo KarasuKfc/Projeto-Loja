@@ -1,18 +1,25 @@
-using trabalhoparte1.Entidades;
+
 
 namespace ProjetoLoja.Models
 {
-    public class Transportadora : IEntidadeComCodigo
+    public class Transportadora
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public double PrecoPorKm { get; set; }
+        public int Id { get; set; }
+        public String Nome { get; set; }
+        public String Telefone { get; set; }
+        public double ValorFrete { get; set; }
 
-        public Transportadora(int codigo, string nome, double precoPorKm)
+        public Transportadora(int id, string nome, string telefone, double valorFrete)
         {
-            Codigo = codigo;
+            Id = id;
             Nome = nome;
-            PrecoPorKm = precoPorKm;
+            Telefone = telefone;
+            ValorFrete = valorFrete;
+        }
+
+        public override string ToString()
+        {
+            return $"{Id} - Nome: {Nome}, Telefone: {Telefone}, Valor do Frete: {ValorFrete:C}";
         }
     }
 }

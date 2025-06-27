@@ -1,109 +1,105 @@
 using ProjetoLoja.Models;
+using trabalhoparte1.Repositorios;
+using System;
 
 namespace ProjetoLoja.Services
 {
+
     public class TransportadoraService
     {
-        Transportadora[] transportadoras = new Transportadora[100];
-        int contador = 0;
+        private TransportadoraRepositorio repositorio;
+
+        public TransportadoraService(TransportadoraRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
 
         public void Menu()
         {
             int opcao;
             do
             {
-                Console.WriteLine("\n--- TRANSPORTADORAS ---");
-                Console.WriteLine("1. Incluir");
-                Console.WriteLine("2. Alterar");
-                Console.WriteLine("3. Excluir");
-                Console.WriteLine("4. Consultar");
-                Console.WriteLine("0. Voltar");
-                Console.Write("Escolha: ");
-                opcao = int.Parse(Console.ReadLine());
+                Console.WriteLine("\n=== Menu Tranportadora ===");
+                Console.WriteLine("1- Adicionar Transportadora");
+                Console.WriteLine("2- Listar Transportadoras");
+                Console.WriteLine("3- Remover Transportadora");
+                Console.WriteLine("4- Buscar Transportadora");
+                Console.WriteLine("0- Voltar");
+                Console.WriteLine("Opção: ");
+                int.TryParse(Console.ReadLine(), out opcao);
 
                 switch (opcao)
                 {
-                    case 1: Incluir(); break;
-                    case 2: Alterar(); break;
-                    case 3: Excluir(); break;
-                    case 4: Consultar(); break;
+                    case 1: Adicionar(); break;
+                    case 2: Listar(); break;
+                    case 3: Remover(); break;
+                    case 4: Buscar(); break;
                 }
-
             } while (opcao != 0);
         }
 
-        void Incluir()
+        private void Adicionar()
         {
-            Console.Write("Código da transportadora: ");
-            int codigo = int.Parse(Console.ReadLine());
-            if (ValidadorCodigo.VerificarCodigoDuplicado(transportadoras, contador, codigo))
-            {
-                Console.WriteLine("Código já cadastrado para outra transportadora.");
-                return;
-            }
-            Console.Write("Nome: ");
+            Console.WriteLine("ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Nome: ");
             string nome = Console.ReadLine();
-            Console.Write("Preço por Km: ");
-            double precoPorKm = double.Parse(Console.ReadLine());
 
-            transportadoras[contador++] = new Transportadora(codigo, nome, precoPorKm);
-            Console.WriteLine("Transportadora incluída com sucesso.");
+            Console.WriteLine("Telefone: ");
+            string telefone = Console.ReadLine();
+
+            Console.WriteLine("Valor Frete: ");
+            double valorFrete = double.Parse(Console.ReadLine());
+
+            var t = new Transportadora(id, nome, telefone, valorFrete);
+            repositorio.Adicionar(t);
+
+            Console.WriteLine("Transportadora cadastrada com sucesso!");
         }
 
-        void Alterar()
+        private void Listar()
         {
-            Console.Write("Código da transportadora: ");
-            int codigo = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < contador; i++)
+            var lista = repositorio.ListarTodos();
+            if (lista.Count == 0)
             {
-                if (transportadoras[i] != null && transportadoras[i].Codigo == codigo)
-                {
-                    Console.Write("Novo nome: ");
-                    transportadoras[i].Nome = Console.ReadLine();
-                    Console.Write("Novo preço por Km: ");
-                    transportadoras[i].PrecoPorKm = double.Parse(Console.ReadLine());
-                    Console.WriteLine("Alterado com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Nenhuma transportadora cadastrada.");
             }
-            Console.WriteLine("Transportadora não encontrada.");
+            else
+            {
+                lista.ForEach(Console.WriteLine);
+            }
         }
 
-        void Excluir()
+        private void Remover()
         {
-            Console.Write("Código da transportadora a excluir: ");
-            int codigo = int.Parse(Console.ReadLine());
+            Console.WriteLine("Informe o ID da tranportadora que será removida: ");
+            int id = int.Parse(Console.ReadLine());
 
-            for (int i = 0; i < contador; i++)
+            if (repositorio.Remover(id))
             {
-                if (transportadoras[i] != null && transportadoras[i].Codigo == codigo)
-                {
-                    for (int j = i; j < contador - 1; j++)
-                        transportadoras[j] = transportadoras[j + 1];
-                    transportadoras[contador - 1] = null;
-                    contador--;
-                    Console.WriteLine("Excluído com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Transportadora removida com sucesso!");
             }
-            Console.WriteLine("Transportadora não encontrada.");
+            else
+            {
+                Console.WriteLine("Transportadora não encontrada.");
+            }
         }
 
-        void Consultar()
+        private void Buscar()
         {
-            Console.Write("Código da transportadora a ser consultada: ");
-            int codigo = int.Parse(Console.ReadLine());
+            Console.WriteLine("Informe o ID da tranportadora: ");
+            int id = int.Parse(Console.ReadLine());
 
-            for (int i = 0; i < contador; i++)
+            var t = repositorio.Buscar(id);
+            if (t != null)
             {
-                if (transportadoras[i] != null && transportadoras[i].Codigo == codigo)
-                {
-                    Console.WriteLine($"Código: {transportadoras[i].Codigo} | Nome: {transportadoras[i].Nome} | Preço por Km: {transportadoras[i].PrecoPorKm}");
-                    return;
-                }
+                Console.WriteLine(t);
             }
-            Console.WriteLine("Transportadora não encontrada.");
+            else
+            {
+                Console.WriteLine("Transportadora não encontrada.");
+            }
         }
     }
 }
