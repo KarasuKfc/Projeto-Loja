@@ -2,19 +2,23 @@ using trabalhoparte1.Entidades;
 
 namespace ProjetoLoja.Models
 {
-    public class Cliente : IEntidadeComCodigo
+    public class Cliente : Usuario
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Telefone { get; set; }
-        public Endereco Endereco { get; set; }
+        public String NomeCompleto { get; set; }
+        public String Endereco { get; set; }
 
-        public Cliente(int codigo, string nome, string telefone, Endereco endereco)
+        public Cliente(string nomeUsuario, string senha, string nomeCompleto, string endereco)
+            : base(nomeUsuario, senha)
         {
-            Codigo = codigo;
-            Nome = nome;
-            Telefone = telefone;
+            NomeCompleto = nomeCompleto;
             Endereco = endereco;
+        }
+
+        public override string Tipo => "Cliente";
+
+        public override string ToString()
+        {
+            return $"{NomeCompleto}, Usuário: {NomeUsuario}, Endereço: {Endereco}";
         }
     }
 }

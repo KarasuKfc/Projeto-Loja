@@ -1,119 +1,105 @@
 using ProjetoLoja.Models;
+using trabalhoparte1.Repositorios;
+using System;
+using System.Reflection;
 
 namespace ProjetoLoja.Services
 {
     public class ClienteService
     {
-        Cliente[] clientes = new Cliente[100];
-        int contador = 0;
+        private ClienteRepositorio repositorio;
+
+        public ClienteService(ClienteRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
 
         public void Menu()
         {
             int opcao;
             do
             {
-                Console.WriteLine("\n--- CLIENTES ---");
-                Console.WriteLine("1. Incluir");
-                Console.WriteLine("2. Alterar");
-                Console.WriteLine("3. Excluir");
-                Console.WriteLine("4. Consultar");
-                Console.WriteLine("0. Voltar");
-                Console.Write("Escolha: ");
-                opcao = int.Parse(Console.ReadLine());
+                Console.WriteLine("\n=== Menu Clientes ===");
+                Console.WriteLine("1- Adicionar Cliente");
+                Console.WriteLine("2- Listar Clientes");
+                Console.WriteLine("3- Remover Cliente");
+                Console.WriteLine("4- Buscar Cliente por Usuário");
+                Console.WriteLine("0- Voltar");
+                Console.Write("Opção: ");
+                int.TryParse(Console.ReadLine(), out opcao);
 
                 switch (opcao)
                 {
-                    case 1: Incluir(); break;
-                    case 2: Alterar(); break;
-                    case 3: Excluir(); break;
-                    case 4: Consultar(); break;
+                    case 1: Adicionar(); break;
+                    case 2: Listar(); break;
+                    case 3: Remover(); break;
+                    case 4: Buscar(); break;
                 }
-
             } while (opcao != 0);
         }
 
-        void Incluir()
+        private void Adicionar()
         {
-            Console.Write("Código: ");
-            int codigo = int.Parse(Console.ReadLine());
-            if (ValidadorCodigo.VerificarCodigoDuplicado(clientes, contador, codigo))
-            {
-                Console.WriteLine("Código já cadastrado para outro cliente.");
-                return;
-            }
-            Console.Write("Nome: ");
+            Console.WriteLine("Usuário: ");
+            string usuario = Console.ReadLine();
+
+            Console.WriteLine("Senha: ");
+            string senha = Console.ReadLine();
+
+            Console.WriteLine("Nome Completo: ");
             string nome = Console.ReadLine();
-            Console.Write("Telefone: ");
-            string telefone = Console.ReadLine();
 
-            Console.WriteLine("Informe o endereço:");
-            Endereco endereco = EnderecoService.LerEndereco();
+            Console.WriteLine("Endereço: ");
+            string endereco = Console.ReadLine();
 
-            clientes[contador++] = new Cliente(codigo, nome, telefone, endereco);
-            Console.WriteLine("Cliente incluído com sucesso.");
+            var cliente = new Cliente(usuario, senha, nome, endereco);
+            repositorio.Adicionar(cliente);
+
+            Console.WriteLine("Cliente adicionado com sucesso!");
         }
 
-        void Alterar()
+        private void Listar()
         {
-            Console.Write("Código do cliente: ");
-            int codigo = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < contador; i++)
+            var lista = repositorio.ListarTodos();
+            if (lista.Count == 0)
             {
-                if (clientes[i].Codigo == codigo)
-                {
-                    Console.Write("Novo nome: ");
-                    clientes[i].Nome = Console.ReadLine();
-                    Console.Write("Novo telefone: ");
-                    clientes[i].Telefone = Console.ReadLine();
-                    Console.WriteLine("Deseja alterar o endereço? (s/n)");
-                    if (Console.ReadLine().Trim().ToLower() == "s")
-                    {
-                        clientes[i].Endereco = EnderecoService.LerEndereco();
-                    }
-                    Console.WriteLine("Alterado com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Nenhum cliente cadastrado.");
             }
-            Console.WriteLine("Cliente não encontrado.");
+            else
+            {
+                lista.ForEach(Console.WriteLine);
+            }
         }
 
-        void Excluir()
+        private void Remover()
         {
-            Console.Write("Código do cliente a excluir: ");
-            int codigo = int.Parse(Console.ReadLine());
+            Console.WriteLine("Informe o usuário do cliente: ");
+            string usuario = Console.ReadLine();
 
-            for (int i = 0; i < contador; i++)
+            if (repositorio.Remover(usuario))
             {
-                if (clientes[i].Codigo == codigo)
-                {
-                    for (int j = i; j < contador - 1; j++)
-                        clientes[j] = clientes[j + 1];
-                        clientes[contador - 1] = null;
-                        contador--;
-                        Console.WriteLine("Excluído com sucesso.");
-                    return;
-                }
+                Console.WriteLine("Cliente removido com sucesso!");
             }
-            Console.WriteLine("Cliente não encontrado.");
+            else
+            {
+                Console.WriteLine("Cliente não encontrado.");
+            }
         }
 
-        void Consultar()
+        private void Buscar()
         {
-            Console.Write("Código do cliente a ser consultado: ");
-            int busca = int.Parse(Console.ReadLine());
+            Console.Write("Informe o usuário do cliente: ");
+            string usuario = Console.ReadLine();
 
-            for (int i = 0; i < contador; i++)
+            var c = repositorio.Buscar(usuario);
+            if (c != null)
             {
-                if (clientes[i] != null && clientes[i].Codigo == busca)
-                {
-                    Console.WriteLine($"Código: {clientes[i].Codigo} | Nome: {clientes[i].Nome} | Telefone: {clientes[i].Telefone}");
-                    Endereco e = clientes[i].Endereco;
-                    Console.WriteLine($"Endereço: {e.Rua}, {e.Numero}, {e.Complemento}, {e.Bairro}, {e.Cep}, {e.Cidade}, {e.Estado}");
-                    return;
-                }
+                Console.WriteLine(c);
             }
-            Console.WriteLine("Cliente não encontrado.");
+            else
+            {
+                Console.WriteLine("Cliente não encontrado.");
+            }
         }
     }
 }
