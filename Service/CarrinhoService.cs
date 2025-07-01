@@ -5,6 +5,7 @@ using trabalhoparte1.Repositorios;
 using System.Linq;
 using ProjetoLoja.Models;
 using trabalhoparte1.Entidades.Execeptions;
+using ProjetoLoja.Services;
 
 namespace trabalhoparte1.Service
 {
@@ -100,6 +101,8 @@ namespace trabalhoparte1.Service
             {
                 Console.WriteLine($"[!] Erro inesperado: {ex.Message}");
             }
+
+            ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
         }
 
 

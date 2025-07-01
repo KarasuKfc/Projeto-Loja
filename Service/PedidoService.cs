@@ -9,6 +9,7 @@ namespace trabalhoparte1.Service
     public class PedidoService
     {
         private List<Pedido> pedidos;
+        private const string CAMINHO_ARQUIVO = "pedidos.json";
 
         public PedidoService(List<Pedido> pedidos)
         {
@@ -90,11 +91,13 @@ namespace trabalhoparte1.Service
             if (escolha == 1 && pedido.Status == StatusPedido.Pendente)
             {
                 pedido.MarcarComoEnviado();
+                ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
                 Console.WriteLine("Pedido marcado como Enviado.");
             }
             else if (escolha == 2 && pedido.Status == StatusPedido.Pendente)
             {
                 pedido.Cancelar();
+                ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
                 Console.WriteLine("Pedido cancelado.");
             }
             else
