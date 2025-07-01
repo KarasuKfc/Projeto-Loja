@@ -57,25 +57,32 @@ namespace trabalhoparte1.Entidades
 
         public override string ToString()
         {
-            string detalhes = $"Pedido {Numero} - {Data:dd/MM/yyyy HH:mm}\n" +
-                                $"Cliente: {Cliente.NomeCompleto}\n" +
+            string cabecalho = $"=== Pedido N {Numero} ===\n" +
+                                $"Cliente: {Cliente.NomeCompleto} ({Cliente.NomeUsuario})\n" +
+                                $"Data: {Data:dd/MM/yyyy HH:mm}\n" +
                                 $"Status: {Status}";
 
             if (Status == StatusPedido.Enviado && DataEnvio.HasValue)
             {
-                detalhes += $"\nData de Envio: {DataEnvio.Value:dd/MM/yyyy HH:mm}";
+                cabecalho += $"\nData de Envio: {DataEnvio:dd/MM/yyyy HH:mm}";
             }
-
-            if (Status == StatusPedido.Cancelado && DataCancelamento.HasValue)
+            else if (Status == StatusPedido.Cancelado && DataCancelamento.HasValue)
             {
-                detalhes += $"\nData de Cancelamento: {DataCancelamento.Value:dd/MM/yyyy HH:mm}";
+                cabecalho += $"\nData de Cancelamento: {DataCancelamento:dd/MM/yyyy HH:mm}";
             }
 
-            detalhes += $"\nItens:\n";
-            detalhes += string.Join("\n", Itens);
-            detalhes += $"\nFrete: R${Frete:F2}\nTotal: R${TotalGeral:F2}";
+            string itens = "\n\n--- Itens do Pedido ---";
+            foreach (var item in Itens)
+            {
+                itens += $"\n{item.Produto.Nome} | Quantidade: {item.Quantidade} | " +
+                        $"Valor: R$ {item.Produto.Preco:F2} | Subtotal: R${item.Total:F2}";
+            }
 
-            return detalhes;
+            string totais = $"\n\nFrete: R$ {Frete:F2}" +
+                            $"\nTotal dos Itens: R${TotalItens:F2}" +
+                            $"\nTotal Geral: R${TotalGeral:F2}";
+
+            return $"{cabecalho}{itens}{totais}";
         }
         
     }
