@@ -10,10 +10,12 @@ namespace trabalhoparte1.Service
     {
         private List<Pedido> pedidos;
         private const string CAMINHO_ARQUIVO = "pedidos.json";
+        private Dictionary<int, Pedido> pedidoPorNumero;
 
-        public PedidoService(List<Pedido> pedidos)
+        public PedidoService()
         {
-            this.pedidos = pedidos;
+            this.pedidos = ArquivoUtil.CarregarDeArquivo<Pedido>(CAMINHO_ARQUIVO);
+            pedidoPorNumero = pedidos.ToDictionary(p => p.Numero);
         }
 
         public void Menu()
@@ -59,8 +61,7 @@ namespace trabalhoparte1.Service
             Console.Write("Número do Pedido: ");
             int numero = int.Parse(Console.ReadLine());
 
-            var pedido = pedidos.FirstOrDefault(p => p.Numero == numero);
-            if (pedido != null)
+            if (pedidoPorNumero.TryGetValue(numero, out Pedido pedido))
             {
                 Console.WriteLine(pedido);
             }
@@ -91,12 +92,14 @@ namespace trabalhoparte1.Service
             if (escolha == 1 && pedido.Status == StatusPedido.Pendente)
             {
                 pedido.MarcarComoEnviado();
+                pedidoPorNumero[pedido.Numero] = pedido;
                 ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
                 Console.WriteLine("Pedido marcado como Enviado.");
             }
             else if (escolha == 2 && pedido.Status == StatusPedido.Pendente)
             {
                 pedido.Cancelar();
+                pedidoPorNumero[pedido.Numero] = pedido;
                 ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
                 Console.WriteLine("Pedido cancelado.");
             }

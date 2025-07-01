@@ -13,10 +13,9 @@ class Program
         var transportadoraRepo = new TransportadoraRepositorio();
         var clienteRepo = new ClienteRepositorio();
 
-        var pedidos = new List<Pedido>();
+        var pedidoService = new PedidoService();
 
-        var carrinhoService = new CarrinhoService(produtoRepo, transportadoraRepo, pedidos);
-        var pedidoService = new PedidoService(pedidos);
+        var carrinhoService = new CarrinhoService(produtoRepo, transportadoraRepo);
 
         var usuarioService = new UsuarioService(clienteRepo);
         Usuario usuario = usuarioService.Login();

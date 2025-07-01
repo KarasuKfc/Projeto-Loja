@@ -12,10 +12,12 @@ namespace trabalhoparte1.Repositorios
     {
         private List<Cliente> clientes = new List<Cliente>();
         private const string CAMINHO_ARQUIVO = "clientes.json";
+        private Dictionary<string, Cliente> clientePorUsuario;
 
         public ClienteRepositorio()
         {
             clientes = ArquivoUtil.CarregarDeArquivo<Cliente>(CAMINHO_ARQUIVO);
+            clientePorUsuario = clientes.ToDictionary(c => c.NomeUsuario);
         }
 
         private void Salvar() => ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, clientes);
@@ -24,6 +26,7 @@ namespace trabalhoparte1.Repositorios
         public void Adicionar(Cliente c)
         {
             clientes.Add(c);
+            clientePorUsuario[c.NomeUsuario] = c;
             Salvar();
         }
         public bool Remover(string usuario)
@@ -31,12 +34,18 @@ namespace trabalhoparte1.Repositorios
             bool removido = clientes.RemoveAll(c => c.NomeUsuario == usuario) > 0;
             if (removido)
             {
+                clientePorUsuario.Remove(usuario);
                 Salvar();
             }
             return removido;
         }
+
+        public Cliente Buscar(string usuario)
+        {
+            clientePorUsuario.TryGetValue(usuario, out Cliente c);
+            return c;
+        }
         
-        public Cliente Buscar(string usuario) => clientes.FirstOrDefault(c => c.NomeUsuario == usuario);
         public List<Cliente> ListarTodos() => clientes;
     }
 }
