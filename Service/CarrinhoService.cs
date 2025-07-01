@@ -12,11 +12,13 @@ namespace trabalhoparte1.Service
         private ProdutoRepositorio produtoRepo;
         private TransportadoraRepositorio transportadoraRepo;
         private List<Pedido> pedidos = new List<Pedido>();
+        private const string CAMINHO_ARQUIVO = "pedidos.json";
 
         public CarrinhoService(ProdutoRepositorio produtoRepo, TransportadoraRepositorio transportadoraRepo)
         {
             this.produtoRepo = produtoRepo;
             this.transportadoraRepo = transportadoraRepo;
+            pedidos = ArquivoUtil.CarregarDeArquivo<Pedido>(CAMINHO_ARQUIVO);
         }
 
         public void Comprar(Cliente cliente)
@@ -80,6 +82,7 @@ namespace trabalhoparte1.Service
 
             Console.WriteLine("\nPedido realizado com sucesso!");
             Console.WriteLine(pedido);
+            ArquivoUtil.SalvarEmArquivo(CAMINHO_ARQUIVO, pedidos);
         }
 
         public void ConsultarPedidos(Cliente cliente)
