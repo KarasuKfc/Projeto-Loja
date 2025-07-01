@@ -22,7 +22,7 @@ namespace trabalhoparte1.Service
             pedidos = ArquivoUtil.CarregarDeArquivo<Pedido>(CAMINHO_ARQUIVO);
         }
 
-        
+
 
         public void Comprar(Cliente cliente)
         {
@@ -101,23 +101,56 @@ namespace trabalhoparte1.Service
                 Console.WriteLine($"[!] Erro inesperado: {ex.Message}");
             }
         }
-        
+
 
         public void ConsultarPedidos(Cliente cliente)
-{
-    var meusPedidos = pedidos.Where(p => p.Cliente.NomeUsuario == cliente.NomeUsuario).ToList();
+        {
+            var meusPedidos = pedidos.Where(p => p.Cliente.NomeUsuario == cliente.NomeUsuario).ToList();
 
-    if (meusPedidos.Count == 0)
-    {
-        Console.WriteLine("Você ainda não possui pedidos.");
-        return;
-    }
+            if (meusPedidos.Count == 0)
+            {
+                Console.WriteLine("Você ainda não possui pedidos.");
+                return;
+            }
 
-    foreach (var pedido in meusPedidos)
-    {
-        Console.WriteLine("\n---PEDIDO---");
-        Console.WriteLine(pedido);
-    }
-}
+            foreach (var pedido in meusPedidos)
+            {
+                Console.WriteLine("\n---PEDIDO---");
+                Console.WriteLine(pedido);
+            }
+        }
+
+        public void ConsultarPorNumero(int numero, Cliente cliente)
+        {
+            var pedido = pedidos.FirstOrDefault(p => p.Numero == numero && p.Cliente.NomeUsuario == cliente.NomeUsuario);
+            if (pedido != null)
+            {
+                Console.WriteLine("\n--- Detalhes do Pedido ---");
+                Console.WriteLine(pedido);
+            }
+            else
+            {
+                Console.WriteLine("Pedido não encontrado.");
+            }
+        }
+
+        public void ConsultarPorIntervalo(DateTime inicio, DateTime fim, Cliente cliente)
+        {
+            var encontrados = pedidos
+                .Where(p => p.Cliente.NomeUsuario == cliente.NomeUsuario && p.Data <= fim).ToList();
+
+            if (encontrados.Count == 0)
+            {
+                Console.WriteLine("Nenhum pedido encontrado no intervalo infomado.");
+                return;
+            }
+
+            foreach (var pedido in encontrados)
+            {
+                Console.WriteLine("\n---PEDIDO---");
+                Console.WriteLine(pedido);
+            }
+                
+        }
     }
 }
