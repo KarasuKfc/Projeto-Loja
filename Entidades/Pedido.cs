@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ProjetoLoja.Models;
+using trabalhoparte1.Entidades.Enums;
 
 namespace trabalhoparte1.Entidades
 {
@@ -18,6 +19,10 @@ namespace trabalhoparte1.Entidades
         public double Frete => Transportadora?.ValorFrete ?? 0;
         public double TotalGeral => TotalItens + Frete;
 
+        public StatusPedido Status { get; set; }
+        public DateTime? DataEnvio { get; private set; }
+        public DateTime? DataCancelamento { get; private set; }
+
         public Pedido(Cliente cliente, List<ItemPedido> items, Transportadora transportadora)
         {
             Numero = proximoNumero++;
@@ -25,6 +30,7 @@ namespace trabalhoparte1.Entidades
             Data = DateTime.Now;
             Itens = items;
             Transportadora = transportadora;
+            Status = StatusPedido.Pendente;
         }
 
         private double CalcularTotalItens()
@@ -37,15 +43,39 @@ namespace trabalhoparte1.Entidades
             return total;
         }
 
+        public void MarcarComoEnviado()
+        {
+            Status = StatusPedido.Enviado;
+            DataEnvio = DateTime.Now;
+        }
+
+        public void Cancelar()
+        {
+            Status = StatusPedido.Cancelado;
+            DataCancelamento = DateTime.Now;
+        }
+
         public override string ToString()
         {
-            return $"Pedido {Numero} - {Data:dd/MM/yyyy HH:mm}\n" +
-                   $"Cliente: {Cliente.NomeCompleto}\n" +
-                   $"Itens:\n" +
-                   $"{string.Join("\n", Itens)}\n" +
-                   $"Frete: R${Frete:F2}\n" +
-                   $"Total: R${TotalGeral:F2}\n";
+            string detalhes = $"Pedido {Numero} - {Data:dd/MM/yyyy HH:mm}\n" +
+                                $"Cliente: {Cliente.NomeCompleto}\n" +
+                                $"Status: {Status}";
 
+            if (Status == StatusPedido.Enviado && DataEnvio.HasValue)
+            {
+                detalhes += $"\nData de Envio: {DataEnvio.Value:dd/MM/yyyy HH:mm}";
+            }
+
+            if (Status == StatusPedido.Cancelado && DataCancelamento.HasValue)
+            {
+                detalhes += $"\nData de Cancelamento: {DataCancelamento.Value:dd/MM/yyyy HH:mm}";
+            }
+
+            detalhes += $"\nItens:\n";
+            detalhes += string.Join("\n", Itens);
+            detalhes += $"\nFrete: R${Frete:F2}\nTotal: R${TotalGeral:F2}";
+
+            return detalhes;
         }
         
     }
