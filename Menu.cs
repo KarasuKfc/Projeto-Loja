@@ -1,6 +1,7 @@
 using ProjetoLoja.Services;
 using System;
 using trabalhoparte1.Repositorios;
+using trabalhoparte1.Service;
 
 public class Menu
 {
@@ -8,6 +9,7 @@ public class Menu
     private FornecedorService fornecedorService;
     private TransportadoraService transportadoraService;
     private ClienteService clienteService;
+    private PedidoService pedidoService;
 
     public Menu()
     {
@@ -33,6 +35,7 @@ public class Menu
             Console.WriteLine("2- Gerenciar Fornecedores");
             Console.WriteLine("3- Gerenciar Transportadoras");
             Console.WriteLine("4- Gerenciar Clientes");
+            Console.WriteLine("5- Gerenciar Pedidos");
             Console.WriteLine("0- Sair");
             Console.WriteLine("Opção: ");
             int.TryParse(Console.ReadLine(), out opcao);
@@ -43,6 +46,7 @@ public class Menu
                 case 2: fornecedorService.Menu(); break;
                 case 3: transportadoraService.Menu(); break;
                 case 4: clienteService.Menu(); break;
+                case 5: pedidoService.Menu(); break;
 
                 case 0: Console.WriteLine("Saindo do sistema..."); break;
             }

@@ -13,6 +13,11 @@ class Program
         var transportadoraRepo = new TransportadoraRepositorio();
         var clienteRepo = new ClienteRepositorio();
 
+        var pedidos = new List<Pedido>();
+
+        var carrinhoService = new CarrinhoService(produtoRepo, transportadoraRepo, pedidos);
+        var pedidoService = new PedidoService(pedidos);
+
         var usuarioService = new UsuarioService(clienteRepo);
         Usuario usuario = usuarioService.Login();
 
@@ -20,13 +25,14 @@ class Program
 
         if (usuario is Administrador)
         {
-            var menuAdmin = new MenuAdministrador(produtoRepo, fornecedorRepo, transportadoraRepo, clienteRepo);
+            var menuAdmin = new MenuAdministrador(produtoRepo, fornecedorRepo, transportadoraRepo, clienteRepo, pedidoService);
             menuAdmin.Exibir();
         }
         else if (usuario is Cliente cliente)
         {
-            var menuClente = new MenuCliente(cliente);
-            menuClente.Exibir();
+            var menuCliente = new MenuCliente(cliente, carrinhoService);
+            menuCliente.Exibir();
         }
     }
 }
+

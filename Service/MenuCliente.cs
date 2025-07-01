@@ -10,14 +10,10 @@ namespace trabalhoparte1.Service
         private Cliente cliente;
         private CarrinhoService carrinhoService;
 
-        public MenuCliente(Cliente cliente)
+        public MenuCliente(Cliente cliente, CarrinhoService carrinhoService)
         {
             this.cliente = cliente;
-
-            var produtoRepo = new ProdutoRepositorio();
-            var transportadoraRepo = new TransportadoraRepositorio();
-
-            carrinhoService = new CarrinhoService(produtoRepo, transportadoraRepo);
+            this.carrinhoService = carrinhoService;
         }
 
         public void Exibir()

@@ -15,7 +15,7 @@ namespace trabalhoparte1.Service
         private List<Pedido> pedidos = new List<Pedido>();
         private const string CAMINHO_ARQUIVO = "pedidos.json";
 
-        public CarrinhoService(ProdutoRepositorio produtoRepo, TransportadoraRepositorio transportadoraRepo)
+        public CarrinhoService(ProdutoRepositorio produtoRepo, TransportadoraRepositorio transportadoraRepo, List<Pedido> pedidos)
         {
             this.produtoRepo = produtoRepo;
             this.transportadoraRepo = transportadoraRepo;

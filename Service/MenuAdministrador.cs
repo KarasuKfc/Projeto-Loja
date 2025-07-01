@@ -11,16 +11,18 @@ namespace trabalhoparte1.Service
         private FornecedorService fornecedorService;
         private TransportadoraService transportadoraService;
         private ClienteService clienteService;
+        private PedidoService pedidoService;
 
         public MenuAdministrador(
-            ProdutoRepositorio prodRepo,
-            FornecedorRepositorio fornRepo,
-            TransportadoraRepositorio transRepo,
-            ClienteRepositorio clienteRepo)
+            ProdutoRepositorio produtoRepo,
+            FornecedorRepositorio fornecedorRepo,
+            TransportadoraRepositorio transportadoraRepo,
+            ClienteRepositorio clienteRepo,
+            PedidoService pedidoService)
         {
-            produtoService = new ProdutoService(prodRepo);
-            fornecedorService = new FornecedorService(fornRepo);
-            transportadoraService = new TransportadoraService(transRepo);
+            produtoService = new ProdutoService(produtoRepo);
+            fornecedorService = new FornecedorService(fornecedorRepo);
+            transportadoraService = new TransportadoraService(transportadoraRepo);
             clienteService = new ClienteService(clienteRepo);
         }
 
